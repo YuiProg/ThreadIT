@@ -1,0 +1,97 @@
+import { isAxiosError } from "axios";
+import axiosInstance from "../helpers/axiosInstance";
+import toast from "react-hot-toast";
+
+type LikeObjectType = {
+    _id: string;
+    username: string;
+    userImage: string;
+}
+
+type PostType = {
+    title: string;
+    description: string;
+    genre: string;
+    userImage?: string;
+    upvote?: LikeObjectType[];
+    downvote?: LikeObjectType[];
+    commentCount?: number;
+    image?: string;
+    imageId?: string;
+    video?: any;
+    videoId?: string;
+    createdAt?: string;
+}
+
+class postHandler {
+
+    private data : PostType = {title: "", description: "", genre: ""};
+
+    constructor (data : PostType) {
+        this.data = data;
+    }
+
+    public createPost = async () : Promise<PostType | Error> => {
+        try {
+            const { title, description, genre, image, video } = this.data;
+            
+            if (image) {
+                const newPost = await axiosInstance.post<PostType>('/createImagePost', {
+                    title,
+                    description,
+                    genre,
+                    image,
+                });
+                this.data = newPost.data;
+            }
+            
+            if (video) {
+                const formdata = new FormData();
+                formdata.append('file', video);
+                formdata.append('title', title);
+                formdata.append('description', description);
+                formdata.append('genre', genre);
+                
+                const newPost = await axiosInstance.post('/createVideoPost', formdata);
+                this.data = newPost.data;
+            }
+            
+            return this.data;
+        } catch (error) {
+            if (isAxiosError(error)) {
+                toast.error('FILE TOO LARGE');
+            }
+            throw error;
+        }
+        
+    }
+    
+
+    public getPosts = async () : Promise<PostType[] | Error> => {
+        try {
+            const posts = await axiosInstance.get<PostType[]>('/getPosts');
+            return posts.data;
+        } catch (error) {
+            if (isAxiosError(error)) {
+                console.log(error.message);
+                toast.error('server error');
+            }
+            throw error;
+        }
+    }
+
+    public getSinglePost = async (id: string) : Promise<PostType> => {
+        try {
+            const post = await axiosInstance.get<PostType>(`/getPost/${id}`);
+            return post.data;
+        } catch (error) {
+            if (isAxiosError(error)) {
+                console.log(error.message);
+                toast.error('server error');
+            }
+            throw error;
+        }
+    }
+}
+
+export default postHandler;
