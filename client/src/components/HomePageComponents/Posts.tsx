@@ -134,7 +134,7 @@ class Posts extends React.Component<PostsProps, PostState> {
                                             </div>
                                             {post.image 
                                                 ? (
-                                                        <img src={post.image} alt="image" className="w-full h-80 sm:h-96 object-cover" />
+                                                        <img src={post.image} alt="image" className="w-full h-80 sm:h-180 object-cover" />
                                                 ) 
                                                 : post.video 
                                                 ? (

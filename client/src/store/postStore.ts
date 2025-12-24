@@ -30,9 +30,12 @@ type CreatePostType = {
 
 const PostStore = create<CreatePostType>((set) => ({
     posts: [],
-    state: false,
+    state: JSON.parse(localStorage.getItem('postState') || 'false'),
 
-    setState: (state: boolean) => set({state}),
+    setState: (state: boolean) => {
+        localStorage.setItem('postState', JSON.stringify(state));
+        set({state});
+    },
     
     getPosts: async () : Promise<void> => {
         try {
