@@ -33,5 +33,5 @@ It allows users to create posts, engage in discussions, and interact through nes
 
 ---
 
-## 📂 Project Structure
+Project is still in development.
 
