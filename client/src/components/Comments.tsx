@@ -88,7 +88,7 @@ class Comments extends React.Component<CommentType, CommentStateType> {
     }
 }
 
-export default function CommentWrapper () {
+const CommentWrapper : React.FC = () => {
 
     const {id} = useParams();
     const {comments, getComments} = CommentStore();
@@ -102,3 +102,4 @@ export default function CommentWrapper () {
     return <Comments postId={String(id)} comments={comments}/>
 }
 
+export default CommentWrapper;
