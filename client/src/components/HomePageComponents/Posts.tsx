@@ -20,16 +20,22 @@ type PostType = {
 
 type PostsProps = {
     posts: PostType[] | null;
+    state: boolean
+}
+
+type PostState = {
+    state: boolean;
 }
 
 
 //pag may useffect na gagamitin better to warp the class in a function
 
-class Posts extends React.Component<PostsProps> { 
-
-    constructor (posts: PostsProps) {
-        super(posts);
-        
+class Posts extends React.Component<PostsProps, PostState> { 
+    constructor (props: PostsProps) {
+        super(props);
+        this.state = {
+            state: props.state
+        }
     }
 
     private formatTime = new convertTime();
@@ -102,14 +108,14 @@ class Posts extends React.Component<PostsProps> {
     }
 }
 
-function PostsWrapper() { //wtf is this shit na ai ko lang to
+function PostsWrapper({state}: {state: boolean}) {
     const {posts, getPosts} = PostStore();
 
     useEffect(() => {
         getPosts();
     }, [getPosts]);
 
-    return <Posts posts={posts} />;
+    return <Posts posts={posts} state={state}/>;
 }
 
 export default PostsWrapper;
