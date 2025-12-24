@@ -3,6 +3,7 @@ import PostStore from "../../store/postStore";
 import { Expand, Share, ThumbsDown, ThumbsUp, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import convertTime from "../../helpers/convertTime";
+import postHandler from "../../handlers/postHandler";
 
 type PostType = {
     title: string;
@@ -45,6 +46,7 @@ class Posts extends React.Component<PostsProps, PostState> {
     }
     
     private formatTime = new convertTime();
+    private handleLike = new postHandler({title: "", description: "", genre: ""});
 
     render(): React.ReactNode {
         const posts = this.props.posts;
@@ -55,7 +57,7 @@ class Posts extends React.Component<PostsProps, PostState> {
                 {Array.isArray(posts) && posts.length > 0 ? (
                     posts.map((post, i) => (
                         <div key={i} className="w-full flex flex-col sm:flex-row items-start sm:items-center border-2 border-l-0 border-base-300 border-r-0 p-4 sm:p-5 mb-5 hover:scale-101 transition-all gap-4">
-                            <div className="w-full sm:w-60 shrink-0">
+                            <div className="w-full sm:w-50 shrink-0">
                                 {post.image ? (
                                     <img loading="lazy" src={post.image} alt="postImage" className="w-full h-48 sm:h-30 rounded-md object-cover"/>
                                 ) : post.video ? (
@@ -87,7 +89,7 @@ class Posts extends React.Component<PostsProps, PostState> {
                                             </button>
                                         </Link>
                                         <button className="btn"><Share/></button>
-                                        <button className="btn"><ThumbsUp/>{post.upvote?.length || 0}</button>
+                                        <button className="btn" onClick={() => this.handleLike.likePost(String(post._id))}><ThumbsUp/>{post.upvote?.length || 0}</button>
                                         <button className="btn"><ThumbsDown/>{post.downvote?.length || 0}</button>
                                     </div>
                                 </div>
@@ -149,7 +151,7 @@ class Posts extends React.Component<PostsProps, PostState> {
                                                             </button>
                                                         </Link>
                                                         <button className="btn btn-md"><Share/></button>
-                                                        <button className="btn btn-md"><ThumbsUp/>{post.upvote?.length || 0}</button>
+                                                        <button className="btn btn-md" onClick={() => this.handleLike.likePost(String(post._id))}><ThumbsUp/>{post.upvote?.length || 0}</button>
                                                         <button className="btn btn-md"><ThumbsDown/>{post.downvote?.length || 0}</button>
                                                     </div>
                                                 </div>

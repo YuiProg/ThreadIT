@@ -113,6 +113,21 @@ PostSchema.statics.getPosts = async function () {
     const POSTS = await this.find({}).limit(7).sort({ createdAt: -1 });
     return POSTS;
 };
+PostSchema.statics.likePost = async function (_id, data) {
+    const POST = await this.findByIdAndUpdate({ _id }, {
+        $addToSet: {
+            upvote: {
+                _id: data.userId,
+                username: data.username,
+                profilePic: data.userImage
+            }
+        },
+        $inc: {
+            commentCount: 1
+        }
+    }, { new: true });
+    return POST;
+};
 const Post = mongoose.model('Post', PostSchema);
 export default Post;
 //# sourceMappingURL=PostModel.js.map

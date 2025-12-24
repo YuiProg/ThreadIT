@@ -22,7 +22,7 @@ export const createImagePost = async (req: Request, res: Response) : Promise<voi
     }
 }
 
-export const createVideoPost = async (req: Request, res: Response) => {
+export const createVideoPost = async (req: Request, res: Response) : Promise<void> => {
     try {
         const data = req.body;
         const {_id, username, profilePic} = req.user;
@@ -39,7 +39,7 @@ export const createVideoPost = async (req: Request, res: Response) => {
     }
 }
 
-export const getPosts = async (req: Request, res: Response) => {
+export const getPosts = async (req: Request, res: Response) : Promise<void> => {
     try {
         const posts = await Post.getPosts();
         res.status(200).json(posts);
@@ -49,13 +49,30 @@ export const getPosts = async (req: Request, res: Response) => {
     }
 }
 
-export const getSinglePost = async (req: Request, res: Response) => {
+export const getSinglePost = async (req: Request, res: Response) : Promise<void> => {
     try {
         const { id } = req.params;
 
         const post = await Post.getSinglePost(String(id));
         res.status(200).json(post);
         
+    } catch (error : any) {
+        error as { message: any };
+        res.status(500).json(error.message);
+    }
+}
+
+export const likePost = async (req: Request, res: Response) : Promise<void> => {
+    try {
+        const { postId } = req.params;
+        const {_id, username, profilePic} = req.user;
+        console.log(_id, username, profilePic);
+        const updatedPost = await Post.likePost(String(postId), {
+            userId: String(_id),
+            username,
+            userImage: profilePic
+        });
+        res.status(200).json(updatedPost);
     } catch (error : any) {
         error as { message: any };
         res.status(500).json(error.message);

@@ -1,6 +1,6 @@
 import mongoose, { Document, Model } from "mongoose";
 type LikeObjectType = {
-    _id: string;
+    _id: mongoose.Schema.Types.ObjectId;
     username: string;
     profilePic: string;
 };
@@ -26,6 +26,11 @@ interface PostStaticInterface extends Model<PostInterface> {
     getPosts(): Promise<PostInterface[]>;
     createVideoPost(data: PostType): Promise<Partial<PostType>>;
     getSinglePost(_id: string): Promise<PostInterface>;
+    likePost(postId: string, data: {
+        userId: string;
+        username: string;
+        userImage: string;
+    }): Promise<PostInterface>;
 }
 declare const Post: PostStaticInterface;
 export default Post;
