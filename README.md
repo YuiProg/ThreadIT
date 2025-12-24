@@ -20,7 +20,7 @@ It allows users to create posts, engage in discussions, and interact through nes
 **Frontend**
 - TypeScript
 - Vite
-- (Add framework here: React / Vue / etc.)
+- Tailwind
 
 **Backend**
 - Node.js
@@ -29,6 +29,9 @@ It allows users to create posts, engage in discussions, and interact through nes
 - MongoDB
 - Express
 - Socket.io
+
+**Authentication**
+- JWT
 
 **Other**
 - HTML / CSS
