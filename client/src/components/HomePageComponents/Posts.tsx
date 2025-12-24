@@ -121,7 +121,7 @@ class Posts extends React.Component<PostsProps, PostState> {
                                             <div className="w-full p-6 rounded-lg flex items-center gap-4">
                                                 {post.userImage
                                                     ? (
-                                                            <img src={post.userImage} alt="dp" className="rounded-full w-16 h-16 object-cover"/>
+                                                            <img src={post.userImage} alt="dp" className="rounded-full w-16 h-20 object-cover"/>
                                                     ) : (
                                                             <div className="w-16 h-16 rounded-full bg-base-300 flex items-center justify-center">
                                                                 <User size={22} />
@@ -134,7 +134,7 @@ class Posts extends React.Component<PostsProps, PostState> {
                                             </div>
                                             {post.image 
                                                 ? (
-                                                        <img src={post.image} alt="image" className="w-full h-80 sm:h-96 object-cover" />
+                                                        <img src={post.image} alt="image" className="w-full h-80 sm:h-180 object-cover" />
                                                 ) 
                                                 : post.video 
                                                 ? (
