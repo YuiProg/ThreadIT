@@ -108,7 +108,11 @@ class Posts extends React.Component<PostsProps, PostState> {
     }
 }
 
-function PostsWrapper({state}: {state: boolean}) {
+type PostsWrapperProps = {
+    state: boolean;
+}
+
+const PostsWrapper : React.FC<PostsWrapperProps> = ({state}) => {
     const {posts, getPosts} = PostStore();
 
     useEffect(() => {
