@@ -37,27 +37,34 @@ class Posts extends React.Component<PostsProps, PostState> {
             state: props.state
         }
     }
-
+    
+    componentDidUpdate(prevProps: PostsProps) {
+        if (prevProps.state !== this.props.state) {
+            this.setState({ state: this.props.state });
+        }
+    }
+    
     private formatTime = new convertTime();
 
-    
     render(): React.ReactNode {
         const posts = this.props.posts;
         return (
-            <div className="w-full h-auto p-10 overflow-auto">
+            !this.state.state 
+                ? (
+                <div className="w-full h-auto p-4 sm:p-10 overflow-auto">
                 {Array.isArray(posts) && posts.length > 0 ? (
                     posts.map((post, i) => (
-                        <div key={i} className="w-full h-40 flex items-center border-2 border-l-0 border-base-300 border-r-0 p-5 mb-5 hover:scale-101 transition-all">
-                            <div className="w-60">
+                        <div key={i} className="w-full flex flex-col sm:flex-row items-start sm:items-center border-2 border-l-0 border-base-300 border-r-0 p-4 sm:p-5 mb-5 hover:scale-101 transition-all gap-4">
+                            <div className="w-full sm:w-60 shrink-0">
                                 {post.image ? (
-                                    <img loading="lazy" src={post.image} alt="postImage" className="w-full h-30 rounded-md object-cover"/>
+                                    <img loading="lazy" src={post.image} alt="postImage" className="w-full h-48 sm:h-30 rounded-md object-cover"/>
                                 ) : post.video ? (
-                                    <div className="w-50 h-auto">
-                                        <video src={post.video} muted className="rounded-md" />
+                                    <div className="w-full sm:w-50 h-auto">
+                                        <video src={post.video} muted className="w-full rounded-md" />
                                     </div>
                                 ) : null}
                             </div>
-                            <div className="w-full h-full flex-col ml-5 p-2">
+                            <div className="w-full flex flex-col ml-0 sm:ml-5 p-2">
                                 <div className="flex">
                                 {post.userImage
                                     ? (
@@ -71,9 +78,9 @@ class Posts extends React.Component<PostsProps, PostState> {
                                 <h1 className="underline ml-2 font-light text-gray-400 cursor-pointer">{post.username}</h1>
                                 <p className="ml-2 font-light text-gray-400">{this.formatTime.ConvertDate(String(post.createdAt))}</p>
                                 </div>
-                                <div className="overflow-hidden w-full h-20 flex-col items-center mt-2 border-t border-base-300">
+                                <div className="overflow-hidden w-full flex flex-col items-start mt-2 border-t border-base-300 pt-2">
                                     <h1 className="font-bold text-xl">{post.title}</h1>
-                                    <div className="flex gap-2">
+                                    <div className="flex flex-wrap gap-2 mt-2">
                                         <Link to={`/post/${post._id}`}>
                                             <button className="btn">
                                                 <Expand/>
@@ -104,16 +111,78 @@ class Posts extends React.Component<PostsProps, PostState> {
                     })
                 )}
             </div>
+                ) : (
+                    <div className="w-full h-auto p-6 sm:p-10 overflow-auto flex flex-col items-center">
+                    {Array.isArray(posts) && posts.length > 0 
+                        ? (
+                            posts.map((post, i) => {
+                                return (
+                                        <div key={i} className="rounded-xl shadow-2xl mb-8 w-full">
+                                            <div className="w-full p-6 rounded-lg flex items-center gap-4">
+                                                {post.userImage
+                                                    ? (
+                                                            <img src={post.userImage} alt="dp" className="rounded-full w-16 h-16 object-cover"/>
+                                                    ) : (
+                                                            <div className="w-16 h-16 rounded-full bg-base-300 flex items-center justify-center">
+                                                                <User size={22} />
+                                                        </div>
+                                                    )}
+                                                <div className="flex flex-col">
+                                                        <span className="font-medium text-lg">{post.username}</span>
+                                                        <span className="text-sm text-gray-400">{this.formatTime.ConvertDate(String(post.createdAt))}</span>
+                                                </div>
+                                            </div>
+                                            {post.image 
+                                                ? (
+                                                        <img src={post.image} alt="image" className="w-full h-80 sm:h-96 object-cover" />
+                                                ) 
+                                                : post.video 
+                                                ? (
+                                                        <video src={post.video} className="w-full h-80 sm:h-96 object-cover" controls />
+                                                ) : null}
+                                                <div className="p-6 rounded-b-lg">
+                                                    <h2 className="font-bold text-2xl mb-3">{post.title}</h2>
+                                                    <div className="flex flex-wrap gap-3 items-center">
+                                                        <Link to={`/post/${post._id}`}>
+                                                            <button className="btn btn-md">
+                                                                <Expand/>
+                                                            </button>
+                                                        </Link>
+                                                        <button className="btn btn-md"><Share/></button>
+                                                        <button className="btn btn-md"><ThumbsUp/>{post.upvote?.length || 0}</button>
+                                                        <button className="btn btn-md"><ThumbsDown/>{post.downvote?.length || 0}</button>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                    );
+                            })
+                        ) 
+                        : (
+                            Array.from({length: 5}).map((_, i) => {
+                                return (
+                                <div key={i} className="bg-base-200 rounded-xl shadow-2xl p-3 mb-20 w-full max-w-full h-200">
+                                    <div className="flex items-center gap-4 w-full">
+                                        <div className="skeleton h-12 w-12 rounded-full mb-2"/>
+                                        <div className="flex-1">
+                                            <div className="skeleton w-32 h-3 rounded-full mb-2"/>
+                                            <div className="skeleton w-48 h-3 rounded-full mb-2"/>
+                                        </div>
+                                    </div>
+                                    <div className="skeleton h-160 sm:h-150 w-full mt-4"/>                               
+                                </div>
+                                );
+                            })
+                        )}
+                    </div>
+                )
+            
         );
     }
 }
 
-type PostsWrapperProps = {
-    state: boolean;
-}
 
-const PostsWrapper : React.FC<PostsWrapperProps> = ({state}) => {
-    const {posts, getPosts} = PostStore();
+const PostsWrapper : React.FC = () => {
+    const {posts, getPosts, state} = PostStore();
 
     useEffect(() => {
         getPosts();

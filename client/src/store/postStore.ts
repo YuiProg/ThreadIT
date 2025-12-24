@@ -23,11 +23,16 @@ type PostType = {
 
 type CreatePostType = {
     posts: PostType[];
+    state: boolean;
     getPosts: () => Promise<void>;
+    setState: (state: boolean) => void;
 }
 
 const PostStore = create<CreatePostType>((set) => ({
     posts: [],
+    state: false,
+
+    setState: (state: boolean) => set({state}),
     
     getPosts: async () : Promise<void> => {
         try {
