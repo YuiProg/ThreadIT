@@ -25,7 +25,10 @@ It allows users to create posts, engage in discussions, and interact through nes
 **Backend**
 - Node.js
 - TypeScript
-- (Add framework here: Express / Fastify / etc.)
+- Cloudinary
+- MongoDB
+- Express
+- Socket.io
 
 **Other**
 - HTML / CSS
