@@ -2,7 +2,7 @@ import mongoose, { Document, Model } from "mongoose"
 import cloudinary from "../helpers/cloudinary.js";
 
 type LikeObjectType = {
-    _id: string;
+    _id: mongoose.Schema.Types.ObjectId;
     username: string;
     profilePic: string;
 }
@@ -30,6 +30,7 @@ interface PostStaticInterface extends Model<PostInterface> {
     getPosts() : Promise<PostInterface[]>;
     createVideoPost(data: PostType): Promise<Partial<PostType>>;
     getSinglePost(_id: string) : Promise<PostInterface>;
+    likePost(postId: string, data: {userId: string, username: string, userImage: string}) : Promise<PostInterface>;
 }
 
 const PostSchema = new mongoose.Schema<PostInterface>({
@@ -156,6 +157,23 @@ PostSchema.statics.getSinglePost = async function (_id: string) : Promise<PostIn
 PostSchema.statics.getPosts = async function () : Promise<PostInterface[]> {
     const POSTS = await this.find({}).limit(7).sort({createdAt: -1});
     return POSTS;
+}
+
+PostSchema.statics.likePost = async function (_id: string, data: { userId: string, username: string, userImage: string }) : Promise<PostInterface> {
+    const POST = await this.findByIdAndUpdate({_id}, {
+        $addToSet: {
+            upvote: {
+                _id: data.userId,
+                username: data.username,
+                profilePic: data.userImage
+            }
+        },
+        $inc: {
+            commentCount: 1
+        }
+    }, { new: true });
+
+    return POST;
 }
 
 const Post = mongoose.model<PostInterface, PostStaticInterface>('Post', PostSchema);

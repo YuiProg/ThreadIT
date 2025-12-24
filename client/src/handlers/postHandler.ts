@@ -1,6 +1,7 @@
 import { isAxiosError } from "axios";
 import axiosInstance from "../helpers/axiosInstance";
 import toast from "react-hot-toast";
+import PostStore from "../store/postStore";
 
 type LikeObjectType = {
     _id: string;
@@ -22,6 +23,8 @@ type PostType = {
     videoId?: string;
     createdAt?: string;
 }
+
+const {getPosts} = PostStore.getState();
 
 class postHandler {
 
@@ -55,7 +58,7 @@ class postHandler {
                 const newPost = await axiosInstance.post('/createVideoPost', formdata);
                 this.data = newPost.data;
             }
-            
+            getPosts();
             return this.data;
         } catch (error) {
             if (isAxiosError(error)) {
@@ -83,6 +86,20 @@ class postHandler {
     public getSinglePost = async (id: string) : Promise<PostType> => {
         try {
             const post = await axiosInstance.get<PostType>(`/getPost/${id}`);
+            return post.data;
+        } catch (error) {
+            if (isAxiosError(error)) {
+                console.log(error.message);
+                toast.error('server error');
+            }
+            throw error;
+        }
+    }
+
+    public likePost = async (id: string) : Promise<PostType> => {
+        try {
+            const post = await axiosInstance.put<PostType>(`/likePost/${id}`);
+            getPosts();
             return post.data;
         } catch (error) {
             if (isAxiosError(error)) {

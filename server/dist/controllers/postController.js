@@ -54,4 +54,21 @@ export const getSinglePost = async (req, res) => {
         res.status(500).json(error.message);
     }
 };
+export const likePost = async (req, res) => {
+    try {
+        const { postId } = req.params;
+        const { _id, username, profilePic } = req.user;
+        console.log(_id, username, profilePic);
+        const updatedPost = await Post.likePost(String(postId), {
+            userId: String(_id),
+            username,
+            userImage: profilePic
+        });
+        res.status(200).json(updatedPost);
+    }
+    catch (error) {
+        error;
+        res.status(500).json(error.message);
+    }
+};
 //# sourceMappingURL=postController.js.map

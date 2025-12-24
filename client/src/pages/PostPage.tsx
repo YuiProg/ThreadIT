@@ -42,11 +42,14 @@ class PostPage extends React.Component<PostProps, PostStateType> {
         this.getPost();
     }
 
+   
+
+    private handleLike = new postHandler({title: "", description: "", genre: ""});
+
     private getPost = async () => {
         try {
             this.setState({loading: true});
-            const i = new postHandler({title: "", description: "", genre: ""});
-            const post = await i.getSinglePost(this.props._id);
+            const post = await this.handleLike.getSinglePost(this.props._id);
             this.setState({post: post});
         } catch (error) {
             toast.error('ERROR');
@@ -81,8 +84,12 @@ class PostPage extends React.Component<PostProps, PostStateType> {
                     <p className="text-gray-400">DESCRIPTION:</p>
                     <h2 className="text-xl">{this.state.post?.description}</h2>
                     <div className="flex gap-2 mb-5 mt-5">
-                        <button className="btn"><ThumbsUp/>{this.state.post?.downvote?.length || 0}</button>
-                        <button className="btn"><ThumbsDown/>{this.state.post?.upvote?.length || 0}</button>
+                        <button className="btn" onClick={() => {
+                            this.handleLike.likePost(String(this.props._id)).then((post) => {
+                                this.setState({post});
+                            });
+                        }}><ThumbsUp/>{this.state.post?.upvote?.length || 0}</button>
+                        <button className="btn"><ThumbsDown/>{this.state.post?.downvote?.length || 0}</button>
                         <button className="btn"><Ellipsis/></button>
                     </div>
                 </div>
@@ -106,10 +113,9 @@ function PostPageWrapper () {
 
     const { id } = useParams();
     const {AuthUser} = AuthStore();
-    
+
     if (!AuthUser) return <Navigate to='/login'/>;
     if (!id) return;
-
     return <PostPage _id={id}/>
 }
 
