@@ -30,7 +30,7 @@ function App() {
   
   return (
     <>
-      <div data-theme="corporate">
+      <div data-theme="dark">
         <Toaster position='bottom-right'/>
         <Navbar user={AuthUser}/>
         <Suspense fallback={

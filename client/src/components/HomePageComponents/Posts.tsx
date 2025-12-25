@@ -4,24 +4,34 @@ import { Expand, Share, ThumbsDown, ThumbsUp, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import convertTime from "../../helpers/convertTime";
 import postHandler from "../../handlers/postHandler";
+import AuthStore from "../../store/authStore";
 
 type PostType = {
     title: string;
     username: string;
     description: string;
     userImage?: string;
-    genre?: string;
+    genre: string;
     image?: string;
     video?: string;
     _id?: string;
-    upvote?: Array<object>;
-    downvote?: Array<object>;
+    upvote?: Array<{
+        _id: string;
+        username: string;
+        userImage: string;
+    } | any>;
+    downvote?: Array<{
+        _id: string;
+        username: string;
+        userImage: string;
+    } | any>;
     createdAt?: string;
 }
 
 type PostsProps = {
     posts: PostType[] | null;
-    state: boolean
+    state: boolean;
+    userId: string;
 }
 
 type PostState = {
@@ -89,8 +99,8 @@ class Posts extends React.Component<PostsProps, PostState> {
                                             </button>
                                         </Link>
                                         <button className="btn"><Share/></button>
-                                        <button className="btn" onClick={() => this.handleLike.likePost(String(post._id))}><ThumbsUp/>{post.upvote?.length || 0}</button>
-                                        <button className="btn"><ThumbsDown/>{post.downvote?.length || 0}</button>
+                                        <button className={`btn ${post.upvote?.some((like) => like?._id === this.props.userId) && "btn-active"}`} onClick={() => this.handleLike.likePost(String(post._id), {post: post})}><ThumbsUp/>{post.upvote?.length || 0}</button>
+                                        <button className={`btn ${post.downvote?.some((like) => like?._id === this.props.userId) && "btn-active"}`} onClick={() => this.handleLike.downvotePost(String(post._id), {post: post})}><ThumbsDown/>{post.downvote?.length || 0}</button>
                                     </div>
                                 </div>
                             </div>
@@ -120,7 +130,7 @@ class Posts extends React.Component<PostsProps, PostState> {
                             posts.map((post, i) => {
                                 return (
                                         <div key={i} className="rounded-xl shadow-2xl mb-8 w-full">
-                                            <div className="w-full p-6 rounded-lg flex items-center gap-4">
+                                            <div className="bg-base-300 w-full p-6 rounded-lg flex items-center gap-4">
                                                 {post.userImage
                                                     ? (
                                                             <img src={post.userImage} alt="dp" className="rounded-full w-16 h-16 object-cover"/>
@@ -136,13 +146,13 @@ class Posts extends React.Component<PostsProps, PostState> {
                                             </div>
                                             {post.image 
                                                 ? (
-                                                        <img src={post.image} alt="image" className="w-full h-80 sm:h-180 object-cover" />
+                                                        <img src={post.image} alt="image" className="w-full h-80 sm:h-220 object-cover" />
                                                 ) 
                                                 : post.video 
                                                 ? (
-                                                        <video src={post.video} className="w-full h-80 sm:h-96 object-cover" controls />
+                                                        <video src={post.video} className="w-full h-80 sm:h-auto object-cover" controls />
                                                 ) : null}
-                                                <div className="p-6 rounded-b-lg">
+                                                <div className="bg-base-300 p-6 rounded-b-lg">
                                                     <h2 className="font-bold text-2xl mb-3">{post.title}</h2>
                                                     <div className="flex flex-wrap gap-3 items-center">
                                                         <Link to={`/post/${post._id}`}>
@@ -151,8 +161,13 @@ class Posts extends React.Component<PostsProps, PostState> {
                                                             </button>
                                                         </Link>
                                                         <button className="btn btn-md"><Share/></button>
-                                                        <button className="btn btn-md" onClick={() => this.handleLike.likePost(String(post._id))}><ThumbsUp/>{post.upvote?.length || 0}</button>
-                                                        <button className="btn btn-md"><ThumbsDown/>{post.downvote?.length || 0}</button>
+                                                        <button 
+                                                            className={`btn btn-md ${post.upvote?.some((like) => like?._id === this.props.userId) && "btn-active"}`}
+                                                            onClick={() => this.handleLike.likePost(String(post._id), {post: post})}
+                                                        >
+                                                                <ThumbsUp/>{post.upvote?.length || 0}
+                                                        </button>
+                                                        <button className={`btn btn-md ${post.downvote?.some((like) => like?._id === this.props.userId) && "btn-active"}`} onClick={() => this.handleLike.downvotePost(String(post._id), {post: post})}><ThumbsDown/>{post.downvote?.length || 0}</button>
                                                     </div>
                                                 </div>
                                         </div>
@@ -185,12 +200,15 @@ class Posts extends React.Component<PostsProps, PostState> {
 
 const PostsWrapper : React.FC = () => {
     const {posts, getPosts, state} = PostStore();
+    const {AuthUser} = AuthStore();
 
     useEffect(() => {
         getPosts();
     }, [getPosts]);
 
-    return <Posts posts={posts} state={state}/>;
+    if (!AuthUser) return;
+
+    return <Posts posts={posts} state={state} userId={AuthUser._id}/>;
 }
 
 export default PostsWrapper;

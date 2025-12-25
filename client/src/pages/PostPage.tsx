@@ -9,10 +9,12 @@ import AuthStore from "../store/authStore";
 
 type PostProps = {
     _id: string;
+    userId: string;
 }
 
 type PostStateType = {
     post: {
+        _id?: string;
         title: string;
         description: string;
         userImage?: string;
@@ -20,8 +22,16 @@ type PostStateType = {
         image?: string;
         video?: string;
         createdAt?: string;
-        upvote?: Array<object>;
-        downvote?: Array<object>;
+        upvote?: Array<{
+            _id: string;
+            username: string;
+            userImage: string;
+        }>;
+        downvote?: Array<{
+            _id: string;
+            username: string;
+            userImage: string;
+        }>;
     } | null;
     loading: boolean;
 }
@@ -84,12 +94,16 @@ class PostPage extends React.Component<PostProps, PostStateType> {
                     <p className="text-gray-400">DESCRIPTION:</p>
                     <h2 className="text-xl">{this.state.post?.description}</h2>
                     <div className="flex gap-2 mb-5 mt-5">
-                        <button className="btn" onClick={() => {
-                            this.handleLike.likePost(String(this.props._id)).then((post) => {
+                        <button className={`btn ${this.state.post?.upvote?.some((like) => like._id === this.props.userId) && "btn-active"}`} onClick={() => {
+                            this.handleLike.likePost(String(this.props._id), {post: this.state.post}).then((post) => {
                                 this.setState({post});
                             });
                         }}><ThumbsUp/>{this.state.post?.upvote?.length || 0}</button>
-                        <button className="btn"><ThumbsDown/>{this.state.post?.downvote?.length || 0}</button>
+                        <button className={`btn ${this.state.post?.downvote?.some((like) => like._id === this.props.userId) && "btn-active"}`} onClick={() => {
+                            this.handleLike.downvotePost(String(this.props._id), {post: this.state.post}).then((post) => {
+                                this.setState({post});
+                            });
+                        }}><ThumbsDown/>{this.state.post?.downvote?.length || 0}</button>
                         <button className="btn"><Ellipsis/></button>
                     </div>
                 </div>
@@ -116,7 +130,7 @@ function PostPageWrapper () {
 
     if (!AuthUser) return <Navigate to='/login'/>;
     if (!id) return;
-    return <PostPage _id={id}/>
+    return <PostPage _id={id} userId={AuthUser._id}/>
 }
 
 export default PostPageWrapper;

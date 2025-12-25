@@ -31,6 +31,9 @@ interface PostStaticInterface extends Model<PostInterface> {
     createVideoPost(data: PostType): Promise<Partial<PostType>>;
     getSinglePost(_id: string) : Promise<PostInterface>;
     likePost(postId: string, data: {userId: string, username: string, userImage: string}) : Promise<PostInterface>;
+    unlikePost(postId: string, data: {userId: string, username: string, userImage: string}) : Promise<PostInterface>;
+    downvotePost(postId: string, data: {userId: string, username: string, userImage: string}) : Promise<PostInterface>;
+    undownvotePost(postId: string, data: {userId: string, username: string, userImage: string}) : Promise<PostInterface>;
 }
 
 const PostSchema = new mongoose.Schema<PostInterface>({
@@ -126,7 +129,7 @@ PostSchema.statics.createImagePost = async function (data: PostType) : Promise<P
 
 PostSchema.statics.createVideoPost = async function (data: PostType) : Promise<Partial<PostInterface> | Error> {
     try {
-        const { userId, video, username, genre, title, description } = data;
+        const { video } = data;
 
         const newData : Partial<PostInterface> = data;
         if (video) {
@@ -159,6 +162,8 @@ PostSchema.statics.getPosts = async function () : Promise<PostInterface[]> {
     return POSTS;
 }
 
+//UPVOTE AND DOWNVOTE LOGIC
+
 PostSchema.statics.likePost = async function (_id: string, data: { userId: string, username: string, userImage: string }) : Promise<PostInterface> {
     const POST = await this.findByIdAndUpdate({_id}, {
         $addToSet: {
@@ -167,14 +172,55 @@ PostSchema.statics.likePost = async function (_id: string, data: { userId: strin
                 username: data.username,
                 profilePic: data.userImage
             }
-        },
-        $inc: {
-            commentCount: 1
         }
     }, { new: true });
 
     return POST;
 }
+
+PostSchema.statics.unlikePost = async function (_id: string, data: { userId: string, username: string, userImage: string }) : Promise<PostInterface> {
+    const POST = await this.findByIdAndUpdate({_id}, {
+        $pull: {
+            upvote: {
+                _id: data.userId,
+                username: data.username,
+                profilePic: data.userImage
+            }
+        }
+    }, { new: true });
+
+    return POST;
+}
+
+PostSchema.statics.downvotePost = async function (_id: string, data: { userId: string, username: string, userImage: string }) : Promise<PostInterface> {
+    const POST = await this.findByIdAndUpdate({_id}, {
+        $addToSet: {
+            downvote: {
+                _id: data.userId,
+                username: data.username,
+                profilePic: data.userImage
+            }
+        }
+    }, { new: true });
+
+    return POST;
+}
+
+PostSchema.statics.undownvotePost = async function (_id: string, data: { userId: string, username: string, userImage: string }) : Promise<PostInterface> {
+    const POST = await this.findByIdAndUpdate({_id}, {
+        $pull: {
+            downvote: {
+                _id: data.userId,
+                username: data.username,
+                profilePic: data.userImage
+            }
+        }
+    }, { new: true });
+
+    return POST;
+}
+
+
 
 const Post = mongoose.model<PostInterface, PostStaticInterface>('Post', PostSchema);
 

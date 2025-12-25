@@ -66,7 +66,7 @@ export const likePost = async (req: Request, res: Response) : Promise<void> => {
     try {
         const { postId } = req.params;
         const {_id, username, profilePic} = req.user;
-        console.log(_id, username, profilePic);
+
         const updatedPost = await Post.likePost(String(postId), {
             userId: String(_id),
             username,
@@ -74,6 +74,57 @@ export const likePost = async (req: Request, res: Response) : Promise<void> => {
         });
         res.status(200).json(updatedPost);
     } catch (error : any) {
+        error as { message: any };
+        res.status(500).json(error.message);
+    }
+}
+
+export const unlikePost = async (req: Request, res: Response) : Promise<void> => {
+    try {
+        const { postId } = req.params;
+        const {_id, username, profilePic} = req.user;
+
+        const updatedPost = await Post.unlikePost(String(postId), {
+            userId: String(_id),
+            username,
+            userImage: profilePic
+        });
+        res.status(200).json(updatedPost);
+    } catch (error : any) {
+        error as { message: any };
+        res.status(500).json(error.message);
+    }
+}
+
+export const downvotePost = async (req: Request, res: Response) : Promise<void> => {
+    try {
+        const { postId } = req.params;
+        const {_id, username, profilePic} = req.user;
+
+        const updatedPost = await Post.downvotePost(String(postId), {
+            userId: String(_id),
+            username,
+            userImage: profilePic
+        });
+        res.status(200).json(updatedPost);
+    } catch (error : any) {
+        error as { message: any };
+        res.status(500).json(error.message);
+    }
+}
+
+export const undownvotePost = async (req: Request, res: Response) : Promise<void> => {
+    try {
+        const { postId } = req.params;
+        const {_id, username, profilePic} = req.user;
+        const updatedPost = await Post.undownvotePost(String(postId), {
+            userId: String(_id),
+            username,
+            userImage: profilePic
+        });
+        res.status(200).json(updatedPost);
+    }
+    catch (error : any) {
         error as { message: any };
         res.status(500).json(error.message);
     }
