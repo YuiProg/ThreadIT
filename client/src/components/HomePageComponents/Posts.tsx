@@ -102,7 +102,7 @@ class Posts extends React.Component<PostsProps, PostState> {
                                         <button className={`btn ${post.upvote?.some((like) => like?._id === this.props.userId) && "btn-active"}`} onClick={() => this.handleLike.likePost(String(post._id), {post: post})}><ThumbsUp/>{post.upvote?.length || 0}</button>
                                         <button className={`btn ${post.downvote?.some((like) => like?._id === this.props.userId) && "btn-active"}`} onClick={() => this.handleLike.downvotePost(String(post._id), {post: post})}><ThumbsDown/>{post.downvote?.length || 0}</button>
                                     </div>
-                                </div>
+                                </div>  
                             </div>
                         </div>
                     ))
