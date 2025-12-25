@@ -2,6 +2,7 @@ import { isAxiosError } from "axios";
 import axiosInstance from "../helpers/axiosInstance";
 import toast from "react-hot-toast";
 import PostStore from "../store/postStore";
+import AuthStore from "../store/authStore";
 
 type LikeObjectType = {
     _id: string;
@@ -25,11 +26,11 @@ type PostType = {
 }
 
 const {getPosts} = PostStore.getState();
+const {AuthUser} = AuthStore.getState();
 
 class postHandler {
 
     private data : PostType = {title: "", description: "", genre: ""};
-
     constructor (data : PostType) {
         this.data = data;
     }
@@ -96,11 +97,83 @@ class postHandler {
         }
     }
 
-    public likePost = async (id: string) : Promise<PostType> => {
+    public likePost = async (id: string, post: object) : Promise<PostType> => {
         try {
-            const post = await axiosInstance.put<PostType>(`/likePost/${id}`);
+            const postdata = post as { post: PostType };
+             //pag nakalike na unlike naman yung request
+            if (postdata.post.upvote?.some((like) => like._id === AuthUser?._id)) {
+                const unlikePost = await this.unlikePost(id);
+                getPosts();
+                return unlikePost;
+            }
+
+            if (postdata.post.downvote?.some((like) => like._id === AuthUser?._id)) {
+                await axiosInstance.put<PostType>(`/undownvotePost/${id}`);
+                getPosts();
+                //no need to return anything here proceed na sa like request then fetch ulet ng posts.
+            }
+
+            const updated_post = await axiosInstance.put<PostType>(`/likePost/${id}`);
+
             getPosts();
-            return post.data;
+            return updated_post.data;
+        } catch (error) {
+            if (isAxiosError(error)) {
+                console.log(error.message);
+                toast.error('server error');
+            }
+            throw error;
+        }
+    }
+
+    public unlikePost = async (id: string) : Promise<PostType> => {
+        try {
+            const updated_post = await axiosInstance.put<PostType>(`/unlikePost/${id}`);
+            getPosts();
+            return updated_post.data;
+        } catch (error) {
+            if (isAxiosError(error)) {
+                console.log(error.message);
+                toast.error('server error');
+            }
+            throw error;
+        }
+    }
+
+    public downvotePost = async (id: string, post: object) : Promise<PostType> => {
+        try {
+
+            const postdata = post as { post: PostType };
+
+            if (postdata.post.downvote?.some((like) => like._id === AuthUser?._id)) {
+                const res = await this.undownvotePost(id);
+                getPosts();
+                return res;
+            }
+
+            if (postdata.post.upvote?.some((like) => like._id === AuthUser?._id)) {
+                await axiosInstance.put<PostType>(`/unlikePost/${id}`);
+                getPosts();
+                //no need to return anything here proceed na sa downvote request then fetch ulet ng posts.
+            }
+
+            const res = await axiosInstance.put<PostType>(`/downvotePost/${id}`);
+            getPosts();
+            return res.data;
+        } catch (error) {
+            if (isAxiosError(error)) {
+                console.log(error.message);
+                toast.error('server error');
+            }
+            throw error;
+        }
+    }
+
+    public undownvotePost = async (id: string) : Promise<PostType> => {
+        try {        
+            const res = await axiosInstance.put<PostType>(`/undownvotePost/${id}`);
+            getPosts();
+            return res.data;
         } catch (error) {
             if (isAxiosError(error)) {
                 console.log(error.message);

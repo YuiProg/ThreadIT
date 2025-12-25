@@ -86,7 +86,7 @@ PostSchema.statics.createImagePost = async function (data) {
 };
 PostSchema.statics.createVideoPost = async function (data) {
     try {
-        const { userId, video, username, genre, title, description } = data;
+        const { video } = data;
         const newData = data;
         if (video) {
             const newVideo = await cloudinary.uploader.upload_large(video, {
@@ -113,6 +113,7 @@ PostSchema.statics.getPosts = async function () {
     const POSTS = await this.find({}).limit(7).sort({ createdAt: -1 });
     return POSTS;
 };
+//UPVOTE AND DOWNVOTE LOGIC
 PostSchema.statics.likePost = async function (_id, data) {
     const POST = await this.findByIdAndUpdate({ _id }, {
         $addToSet: {
@@ -121,9 +122,42 @@ PostSchema.statics.likePost = async function (_id, data) {
                 username: data.username,
                 profilePic: data.userImage
             }
-        },
-        $inc: {
-            commentCount: 1
+        }
+    }, { new: true });
+    return POST;
+};
+PostSchema.statics.unlikePost = async function (_id, data) {
+    const POST = await this.findByIdAndUpdate({ _id }, {
+        $pull: {
+            upvote: {
+                _id: data.userId,
+                username: data.username,
+                profilePic: data.userImage
+            }
+        }
+    }, { new: true });
+    return POST;
+};
+PostSchema.statics.downvotePost = async function (_id, data) {
+    const POST = await this.findByIdAndUpdate({ _id }, {
+        $addToSet: {
+            downvote: {
+                _id: data.userId,
+                username: data.username,
+                profilePic: data.userImage
+            }
+        }
+    }, { new: true });
+    return POST;
+};
+PostSchema.statics.undownvotePost = async function (_id, data) {
+    const POST = await this.findByIdAndUpdate({ _id }, {
+        $pull: {
+            downvote: {
+                _id: data.userId,
+                username: data.username,
+                profilePic: data.userImage
+            }
         }
     }, { new: true });
     return POST;

@@ -31,6 +31,21 @@ interface PostStaticInterface extends Model<PostInterface> {
         username: string;
         userImage: string;
     }): Promise<PostInterface>;
+    unlikePost(postId: string, data: {
+        userId: string;
+        username: string;
+        userImage: string;
+    }): Promise<PostInterface>;
+    downvotePost(postId: string, data: {
+        userId: string;
+        username: string;
+        userImage: string;
+    }): Promise<PostInterface>;
+    undownvotePost(postId: string, data: {
+        userId: string;
+        username: string;
+        userImage: string;
+    }): Promise<PostInterface>;
 }
 declare const Post: PostStaticInterface;
 export default Post;
