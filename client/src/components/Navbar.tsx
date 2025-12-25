@@ -1,9 +1,11 @@
 import React, { lazy, Suspense } from "react";
 import Authenticate from "../helpers/authenticate";
-import { Plus, User } from "lucide-react";
+import { Plus, Spool, User } from "lucide-react";
 import ImageHandler from "../handlers/ImageHandler";
 import AuthStore from "../store/authStore";
 
+
+const CreateThread = lazy(() => import('./HomePageComponents/CreateThread'));  
 const CreatePost = lazy(() => import('./HomePageComponents/CreatePost'));
 
 type UpdateInput = {
@@ -29,6 +31,7 @@ type ModalState = { //FOR THE MODAL
 type NavbarState = { //FOR THE NAVBAR
   isOpen: boolean;
   createOpen: boolean;
+  openThread: boolean;
 }
 
 
@@ -116,7 +119,8 @@ class Navbar extends React.Component<UserType, NavbarState> {
       super(user);
       this.state = {
         isOpen: false,
-        createOpen: false
+        createOpen: false,
+        openThread: false
       }
     }
   
@@ -134,12 +138,23 @@ class Navbar extends React.Component<UserType, NavbarState> {
         <>
         {this.state.createOpen && //this is going white screen pag nag loload fix this later.
           <Suspense fallback={
-            <div className="w-full h-screen flex items-center justify-center">
+            <div className="flex items-center justify-center">
               <h1>LOADING...</h1>
             </div>
           }>
             <CreatePost onClose={() => this.setState({createOpen: false})}/>
           </Suspense>
+        }
+        {
+          this.state.openThread && (
+            <Suspense fallback={
+              <div className="flex items-center justify-center">
+                <h1>LOADING...</h1>
+              </div>
+            }>
+              <CreateThread onClose={() => this.setState({openThread: false})} userImage={String(this.props.user?.profilePic)}/>
+            </Suspense>
+          )
         }
         {this.state.isOpen && <Modal user={{user: this.props.user}} isOpen={this.state.isOpen} onClose={() => this.setState({isOpen: false})}/>}
         
@@ -157,10 +172,18 @@ class Navbar extends React.Component<UserType, NavbarState> {
                       this.setState({createOpen: true});
                       this.setState({isOpen: false});
                     }} 
-                    className="border-white text-white btn btn-outline mr-5 rounded-full hover:border-0 hover:bg-black/20 active:bg-black/50"
+                    className="border-white text-white btn btn-outline mr-2 rounded-full hover:border-0 hover:bg-black/20 active:bg-black/50"
                   >
                         <Plus/>
-                        Create
+                        Post
+                  </button>
+                  <button
+                    onClick={() => {
+                      this.setState({openThread: true});
+                    }}  
+                    className="border-white text-white btn btn-outline mr-2 rounded-full hover:border-0 hover:bg-black/20">
+                    <Spool/>
+                    Create Thread
                   </button>
                   <div className="dropdown dropdown-end flex">
                     {this.props.user.profilePic 

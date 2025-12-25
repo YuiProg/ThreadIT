@@ -129,7 +129,7 @@ class Posts extends React.Component<PostsProps, PostState> {
                         ? (
                             posts.map((post, i) => {
                                 return (
-                                        <div key={i} className="rounded-xl shadow-2xl mb-8 w-full">
+                                        <div key={i} className="rounded-xl shadow-2xl mb-8 w-full transition-all">
                                             <div className="bg-base-300 w-full p-6 rounded-lg flex items-center gap-4">
                                                 {post.userImage
                                                     ? (
