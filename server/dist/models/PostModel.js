@@ -131,8 +131,6 @@ PostSchema.statics.unlikePost = async function (_id, data) {
         $pull: {
             upvote: {
                 _id: data.userId,
-                username: data.username,
-                profilePic: data.userImage
             }
         }
     }, { new: true });
@@ -155,8 +153,6 @@ PostSchema.statics.undownvotePost = async function (_id, data) {
         $pull: {
             downvote: {
                 _id: data.userId,
-                username: data.username,
-                profilePic: data.userImage
             }
         }
     }, { new: true });
