@@ -5,6 +5,7 @@ import env from './helpers/env.js';
 import authRoutes from './routes/auth.routes.js';
 import postRoutes from './routes/post.routes.js';
 import commentRoutes from './routes/comment.routes.js';
+import threadRoutes from './routes/thread.routes.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 const app = express();
@@ -24,6 +25,7 @@ app.get('/test', (req, res) => {
 app.use('/api', authRoutes);
 app.use('/api', postRoutes);
 app.use('/api', commentRoutes);
+app.use('/api', threadRoutes);
 server.listen(env.PORT, () => {
     connectDB(env.MONGO_URI);
     console.log(`Server is running on port: ${env.PORT}`);

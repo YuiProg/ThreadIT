@@ -30,10 +30,11 @@ const {AuthUser} = AuthStore.getState();
 
 class postHandler {
 
-    private data : PostType = {title: "", description: "", genre: ""};
+    private data = {} as PostType;
     constructor (data : PostType) {
         this.data = data;
     }
+    
 
     public createPost = async () : Promise<PostType | Error> => {
         try {
