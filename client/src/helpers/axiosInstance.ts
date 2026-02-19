@@ -3,7 +3,7 @@ import axios from "axios";
 type AxiosInstanceType = {
     baseURL: string;
     headers: {
-        'Content-Type': string;
+        'Content-Type': 'application/json';
     };
     withCredentials: boolean;
 }

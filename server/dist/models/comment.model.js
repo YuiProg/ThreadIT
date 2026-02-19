@@ -22,6 +22,7 @@ const CommentSchema = new mongoose.Schema({
         type: String
     }
 }, { timestamps: true });
+//pass the post id here to update the post commentcount
 CommentSchema.statics.newComment = async function (comment) {
     try {
         const newComment = await this.create(comment);

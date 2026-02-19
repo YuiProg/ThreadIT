@@ -15,16 +15,8 @@ type PostType = {
     image?: string;
     video?: string;
     _id?: string;
-    upvote?: Array<{
-        _id: string;
-        username: string;
-        userImage: string;
-    } | any>;
-    downvote?: Array<{
-        _id: string;
-        username: string;
-        userImage: string;
-    } | any>;
+    upvote?: Array<any>;
+    downvote?: Array<any>;
     createdAt?: string;
 }
 
@@ -192,7 +184,6 @@ class Posts extends React.Component<PostsProps, PostState> {
                         )}
                     </div>
                 )
-            
         );
     }
 }

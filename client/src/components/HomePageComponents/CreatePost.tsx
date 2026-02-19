@@ -125,7 +125,7 @@ class CreatePost extends React.Component<ModalState, CreateType> {
                         ) 
                         : (
                         <label className="w-full h-50 bg-base-200 hover:bg-base-300 border-dashed border rounded-sm flex items-center justify-center cursor-pointer">
-                            <input onChange={(e) => this.handleImage(e)} type="file" hidden className=""/>
+                            <input onChange={(e) => this.handleImage(e)} type="file" hidden/>
                             <div className="flex flex-col items-center gap-2 pointer-events-none">
                                 <Plus/>
                                 <h1>ADD FILE</h1>
