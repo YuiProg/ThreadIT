@@ -24,6 +24,8 @@ type PostType = {
 type CreatePostType = {
     posts: PostType[];
     state: boolean;
+    view: string;
+    setView: (state: string) => void;
     getPosts: () => Promise<void>;
     setState: (state: boolean) => void;
 }
@@ -31,6 +33,11 @@ type CreatePostType = {
 const PostStore = create<CreatePostType>((set) => ({
     posts: [],
     state: JSON.parse(localStorage.getItem('postState') || 'false'),
+    view: 'post',
+
+    setView: (state: string) => {
+        set({view: state});
+    },
 
     setState: (state: boolean) => {
         localStorage.setItem('postState', JSON.stringify(state));

@@ -1,13 +1,13 @@
 import React from "react";
-import Rightpanel from "../components/HomePageComponents/Rightpanel";
+// import Rightpanel from "../components/HomePageComponents/Rightpanel";
 import PostsWrapper from "../components/HomePageComponents/Posts";
-import { Grid2X2, Rows3 } from "lucide-react";
+import { ChevronDown, Grid2X2, Rows3 } from "lucide-react";
 import PostStore from "../store/postStore";
 
 type HomePageState = {
     state: boolean;
 }
-
+const { setView } = PostStore.getState();
 class Homepage extends React.Component<{}, HomePageState> {
 
     constructor (props: {}) {
@@ -19,15 +19,19 @@ class Homepage extends React.Component<{}, HomePageState> {
 
 
     render() : React.ReactNode {
+        
         return (
             <>
             <div className="pt-15 w-full flex ">
-                <Rightpanel/>
+                {/* <Rightpanel/> */}
                 <div className="flex-1 overflow-y-auto">
                     <div className="w-full p-5 flex">
-                        <div className="flex-col">
-                            <h1 className="font-bold text-xl">POSTS</h1>
-                            <p>sort by</p>
+                        <div className="dropdown dropdown-bottom">
+                        <div tabIndex={0} role="button" className="btn m-1 bg-transparent border-0 text-xl">POSTS<ChevronDown/></div>
+                            <ul tabIndex={-1} className="dropdown-content menu bg-base-200 rounded-box z-1 w-52 p-2 shadow-sm">
+                                <li onClick={() => setView('post')}><a>POST</a></li>
+                                <li onClick={() => setView('threads')}><a>THREADS</a></li>
+                            </ul>
                         </div>
                         <div className="flex ml-auto items-center">
                             <label 

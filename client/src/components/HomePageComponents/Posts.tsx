@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import convertTime from "../../helpers/convertTime";
 import postHandler from "../../handlers/postHandler";
 import AuthStore from "../../store/authStore";
+import { div } from "motion/react-client";
+import ThreadStore from "../../store/threadStore";
 
 type PostType = {
     title: string;
@@ -48,12 +50,13 @@ class Posts extends React.Component<PostsProps, PostState> {
     }
     
     private formatTime = new convertTime();
-    private handleLike = new postHandler({title: "", description: "", genre: ""});
+    private handleLike = new postHandler({title: "", description: "", genre: "", private: false});
 
     render(): React.ReactNode {
+        const { state } = this.state;
         const posts = this.props.posts;
         return (
-            !this.state.state 
+            !state 
                 ? (
                 <div className="w-full h-auto p-4 sm:p-10 overflow-auto">
                 {Array.isArray(posts) && posts.length > 0 ? (
@@ -94,7 +97,7 @@ class Posts extends React.Component<PostsProps, PostState> {
                                         <button className={`btn ${post.upvote?.some((like) => like?._id === this.props.userId) && "btn-active"}`} onClick={() => this.handleLike.likePost(String(post._id), {post: post})}><ThumbsUp/>{post.upvote?.length || 0}</button>
                                         <button className={`btn ${post.downvote?.some((like) => like?._id === this.props.userId) && "btn-active"}`} onClick={() => this.handleLike.downvotePost(String(post._id), {post: post})}><ThumbsDown/>{post.downvote?.length || 0}</button>
                                     </div>
-                                </div>  
+                                </div>
                             </div>
                         </div>
                     ))
@@ -188,18 +191,40 @@ class Posts extends React.Component<PostsProps, PostState> {
     }
 }
 
+type ThreadTypes = {
+    threads: Array<object>;
+}
+
+class Threads extends React.Component<ThreadTypes> {
+    constructor(props: any) {
+        super(props);
+        console.log(props);
+    }
+    render () : React.ReactNode {
+        return (
+            <div>
+                <h1>wow</h1>
+            </div>
+        );
+    }
+}
+
 
 const PostsWrapper : React.FC = () => {
-    const {posts, getPosts, state} = PostStore();
+    const {posts, getPosts, state, view} = PostStore();
+    const { threads, getThreads } = ThreadStore();
     const {AuthUser} = AuthStore();
 
     useEffect(() => {
         getPosts();
+        getThreads();
     }, [getPosts]);
 
     if (!AuthUser) return;
 
-    return <Posts posts={posts} state={state} userId={AuthUser._id}/>;
+    return (
+        view === 'post' ? <Posts posts={posts} state={state} userId={AuthUser._id}/> : <Threads threads={threads}/>
+    );
 }
 
 export default PostsWrapper;

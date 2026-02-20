@@ -15,7 +15,7 @@ type UserInput = {
     username?: string;
     profilePic?: string;
 }
-
+//bad practice to
 class Authenticate {
     private email?: string;
     private password?: string;

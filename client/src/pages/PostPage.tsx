@@ -54,7 +54,7 @@ class PostPage extends React.Component<PostProps, PostStateType> {
 
    
 
-    private handleLike = new postHandler({title: "", description: "", genre: ""});
+    private handleLike = new postHandler({title: "", description: "", genre: "", private: false});
 
     private getPost = async () => {
         try {

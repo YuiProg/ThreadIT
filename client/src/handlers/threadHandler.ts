@@ -15,7 +15,7 @@ class ThreadHandler {
         this.data = data;
     }
 
-    public createThread = async () : Promise<ThreadTypes | Error> => {
+    public createThread = async () : Promise<ThreadTypes[]> => {
         
         try {
             const createdThread = await axiosInstance.post('/newThread', this.data); 
@@ -26,6 +26,20 @@ class ThreadHandler {
             throw error;
         }
         
+    }
+
+    public fetchThreads = async () : Promise<ThreadTypes[]> => {
+        let data = {} as ThreadTypes[];
+        try {
+            const fetchedThreads = await axiosInstance.get('/getThreads');
+            data = fetchedThreads.data;
+            return fetchedThreads.data;
+        } catch (error : any) {
+            toast.error('Error fetching threads');
+            console.log(error.message);
+        } finally {
+            return data;
+        }
     }
 }
 
