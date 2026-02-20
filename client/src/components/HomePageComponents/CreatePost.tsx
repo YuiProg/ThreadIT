@@ -17,6 +17,7 @@ type CreateType = {
     videoPreview: string;
     loading: boolean;
     type: string | undefined;
+    private: Boolean;
 }
 
 class CreatePost extends React.Component<ModalState, CreateType> {
@@ -29,7 +30,8 @@ class CreatePost extends React.Component<ModalState, CreateType> {
             genre: "",
             loading: false,
             type: '',
-            videoPreview: ''
+            videoPreview: '',
+            private: false
         }
     }
     
@@ -143,6 +145,13 @@ class CreatePost extends React.Component<ModalState, CreateType> {
                                     </div>
                                 );
                             })}
+                        </div>
+                        <h1 className="text-xl mt-3 mb-3">VIEWING</h1>
+                        <div className="w-full h-auto flex gap-3">
+                            <h1>PRIVATE</h1>
+                            <input onChange={() => this.setState({private: true})} type="radio" name="radio-1" className="radio" defaultChecked />
+                            <h1 onChange={() => this.setState({private: false})}>PUBLIC</h1>
+                            <input type="radio" name="radio-1" defaultChecked className="radio" />
                         </div>
                         <div className="w-full text-center mt-10">
                             <button 

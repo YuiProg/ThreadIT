@@ -21,6 +21,7 @@ type PostType = {
     imageId?: string;
     video: string | undefined;
     videoId?: string | undefined;
+    private: boolean;
 }
 
 interface PostInterface extends PostType, Document {}
@@ -68,6 +69,10 @@ const PostSchema = new mongoose.Schema<PostInterface>({
     downvote: {
         type: [Object],
         default: []
+    },
+    private: {
+        type: Boolean,
+        required: true
     },
     commentCount: {
         type: Number,
@@ -158,7 +163,7 @@ PostSchema.statics.getSinglePost = async function (_id: string) : Promise<PostIn
 
 
 PostSchema.statics.getPosts = async function () : Promise<PostInterface[]> {
-    const POSTS = await this.find({}).limit(7).sort({createdAt: -1});
+    const POSTS = await this.find({private: false}).limit(7).sort({createdAt: -1});
     return POSTS;
 }
 

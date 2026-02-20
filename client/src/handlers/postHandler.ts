@@ -23,6 +23,7 @@ type PostType = {
     video?: any;
     videoId?: string;
     createdAt?: string;
+    private: Boolean;
 }
 
 const {getPosts} = PostStore.getState();
@@ -38,15 +39,10 @@ class postHandler {
 
     public createPost = async () : Promise<PostType | Error> => {
         try {
-            const { title, description, genre, image, video } = this.data;
+            const { title, description, genre, image, video, } = this.data;
             
             if (image) {
-                const newPost = await axiosInstance.post<PostType>('/createImagePost', {
-                    title,
-                    description,
-                    genre,
-                    image,
-                });
+                const newPost = await axiosInstance.post<PostType>('/createImagePost', this.data);
                 this.data = newPost.data;
             }
             

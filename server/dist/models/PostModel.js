@@ -33,6 +33,10 @@ const PostSchema = new mongoose.Schema({
         type: [Object],
         default: []
     },
+    private: {
+        type: Boolean,
+        required: true
+    },
     commentCount: {
         type: Number,
         default: 0
@@ -110,7 +114,7 @@ PostSchema.statics.getSinglePost = async function (_id) {
     return post;
 };
 PostSchema.statics.getPosts = async function () {
-    const POSTS = await this.find({}).limit(7).sort({ createdAt: -1 });
+    const POSTS = await this.find({ private: false }).limit(7).sort({ createdAt: -1 });
     return POSTS;
 };
 //UPVOTE AND DOWNVOTE LOGIC

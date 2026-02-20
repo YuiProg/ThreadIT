@@ -57,7 +57,13 @@ class CreateThread extends React.Component<CreateThreadProps, CreateThreadStateT
                     <form onSubmit={(e) => this.handleSubmit(e)} className="p-10 pt-5 w-full h-auto flex flex-col items-center gap-5">
                         <div className="w-full flex flex-col gap-5 items-center justify-center">
                         <h1 className="text-xl">Thread Icon</h1>
-                        <div className="w-40 h-40 rounded-full border border-dashed"/>
+                        <label className="flex items-center justify-center w-40 h-40 rounded-full border border-dashed hover:bg-base-300 cursor-pointer">
+                            <input type="file" hidden onChange={(e) => this.handleImage(e)}/>
+                            <div className="flex-col items-center justify-center flex gap-2">
+                                <Plus/>
+                                <h1 className="text-xl">Upload Icon</h1>
+                            </div>
+                        </label>
                         </div>
                         <h1 className="text-xl">Thread border image</h1>
                         <label className="flex items-center justify-center w-full h-80 rounded-sm border border-dashed hover:bg-base-300 cursor-pointer">
