@@ -33,8 +33,8 @@ const PostSchema = new mongoose.Schema({
         type: [Object],
         default: []
     },
-    private: {
-        type: Boolean,
+    accessType: {
+        type: String,
         required: true
     },
     commentCount: {
@@ -114,10 +114,11 @@ PostSchema.statics.getSinglePost = async function (_id) {
     return post;
 };
 PostSchema.statics.getPosts = async function () {
-    const POSTS = await this.find({ private: false }).limit(7).sort({ createdAt: -1 });
+    const POSTS = await this.find({ accessType: "public" }).limit(7).sort({ createdAt: -1 });
     return POSTS;
 };
 //UPVOTE AND DOWNVOTE LOGIC
+//access type false = public private = true
 PostSchema.statics.likePost = async function (_id, data) {
     const POST = await this.findByIdAndUpdate({ _id }, {
         $addToSet: {

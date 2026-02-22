@@ -16,6 +16,8 @@ type AuthType = {
     loadingUser: boolean;
     authenticating: boolean;
     AuthUser: UserType | null; 
+    view: boolean;
+    setView: () => void;
     getUser: () => Promise<void>;
     registerUser: (userData: UserInputType) => Promise<void>;
     loginUser: (userData: Pick<UserInputType, 'email' | 'password'>) => Promise<void>;
@@ -33,7 +35,10 @@ const AuthStore = create<AuthType>((set, get) =>({
     AuthUser: null,
     loadingUser: false,
     authenticating: false,
-    
+    view: false,
+
+    setView: () => set({view: get().view ? false : true}),
+
     getUser: async () : Promise<void> => {
         set({loadingUser: true});
         try {

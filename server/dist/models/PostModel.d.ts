@@ -18,7 +18,7 @@ type PostType = {
     imageId?: string;
     video: string | undefined;
     videoId?: string | undefined;
-    private: boolean;
+    accessType: string;
 };
 interface PostInterface extends PostType, Document {
 }

@@ -21,7 +21,7 @@ type PostType = {
     imageId?: string;
     video: string | undefined;
     videoId?: string | undefined;
-    private: boolean;
+    accessType: string;
 }
 
 interface PostInterface extends PostType, Document {}
@@ -70,8 +70,8 @@ const PostSchema = new mongoose.Schema<PostInterface>({
         type: [Object],
         default: []
     },
-    private: {
-        type: Boolean,
+    accessType: {
+        type: String,
         required: true
     },
     commentCount: {
@@ -163,12 +163,12 @@ PostSchema.statics.getSinglePost = async function (_id: string) : Promise<PostIn
 
 
 PostSchema.statics.getPosts = async function () : Promise<PostInterface[]> {
-    const POSTS = await this.find({private: false}).limit(7).sort({createdAt: -1});
+    const POSTS = await this.find({accessType: "public"}).limit(7).sort({createdAt: -1});
     return POSTS;
 }
 
 //UPVOTE AND DOWNVOTE LOGIC
-
+//access type false = public private = true
 PostSchema.statics.likePost = async function (_id: string, data: { userId: string, username: string, userImage: string }) : Promise<PostInterface> {
     const POST = await this.findByIdAndUpdate({_id}, {
         $addToSet: {

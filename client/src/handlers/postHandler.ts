@@ -23,7 +23,7 @@ type PostType = {
     video?: any;
     videoId?: string;
     createdAt?: string;
-    private: Boolean;
+    accessType: boolean;
 }
 
 const {getPosts} = PostStore.getState();
@@ -39,7 +39,7 @@ class postHandler {
 
     public createPost = async () : Promise<PostType | Error> => {
         try {
-            const { title, description, genre, image, video, } = this.data;
+            const { title, description, genre, image, video, accessType } = this.data;
             
             if (image) {
                 const newPost = await axiosInstance.post<PostType>('/createImagePost', this.data);
@@ -52,6 +52,7 @@ class postHandler {
                 formdata.append('title', title);
                 formdata.append('description', description);
                 formdata.append('genre', genre);
+                formdata.append('accessType', String(accessType));
                 
                 const newPost = await axiosInstance.post('/createVideoPost', formdata);
                 this.data = newPost.data;

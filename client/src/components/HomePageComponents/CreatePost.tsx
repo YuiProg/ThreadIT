@@ -17,7 +17,7 @@ type CreateType = {
     videoPreview: string;
     loading: boolean;
     type: string | undefined;
-    private: Boolean;
+    accessType: string;
 }
 
 class CreatePost extends React.Component<ModalState, CreateType> {
@@ -31,7 +31,7 @@ class CreatePost extends React.Component<ModalState, CreateType> {
             loading: false,
             type: '',
             videoPreview: '',
-            private: false
+            accessType: 'public'
         }
     }
     
@@ -149,9 +149,9 @@ class CreatePost extends React.Component<ModalState, CreateType> {
                         <h1 className="text-xl mt-3 mb-3">VIEWING</h1>
                         <div className="w-full h-auto flex gap-3">
                             <h1>PRIVATE</h1>
-                            <input onChange={() => this.setState({private: true})} type="radio" name="radio-1" className="radio" defaultChecked />
-                            <h1 onChange={() => this.setState({private: false})}>PUBLIC</h1>
-                            <input type="radio" name="radio-1" defaultChecked className="radio" />
+                            <input onChange={() => this.setState({accessType: 'private'})} type="radio" name="radio-1" className="radio"/>
+                            <h1>PUBLIC</h1>
+                            <input onChange={() => this.setState({accessType: 'public'})} type="radio" name="radio-1" defaultChecked className="radio" />
                         </div>
                         <div className="w-full text-center mt-10">
                             <button 

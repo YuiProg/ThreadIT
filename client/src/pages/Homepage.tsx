@@ -3,11 +3,13 @@ import React from "react";
 import PostsWrapper from "../components/HomePageComponents/Posts";
 import { ChevronDown, Grid2X2, Rows3 } from "lucide-react";
 import PostStore from "../store/postStore";
+import AuthStore from "../store/authStore";
+import Threads from "../components/HomePageComponents/Threads";
 
 type HomePageState = {
     state: boolean;
 }
-const { setView } = PostStore.getState();
+
 class Homepage extends React.Component<{}, HomePageState> {
 
     constructor (props: {}) {
@@ -19,7 +21,7 @@ class Homepage extends React.Component<{}, HomePageState> {
 
 
     render() : React.ReactNode {
-        
+        const { setView, view } = AuthStore.getState();
         return (
             <>
             <div className="pt-15 w-full flex ">
@@ -29,8 +31,8 @@ class Homepage extends React.Component<{}, HomePageState> {
                         <div className="dropdown dropdown-bottom">
                         <div tabIndex={0} role="button" className="btn m-1 bg-transparent border-0 text-xl">POSTS<ChevronDown/></div>
                             <ul tabIndex={-1} className="dropdown-content menu bg-base-200 rounded-box z-1 w-52 p-2 shadow-sm">
-                                <li onClick={() => setView('post')}><a>POST</a></li>
-                                <li onClick={() => setView('threads')}><a>THREADS</a></li>
+                                <li onClick={() => setView()}><a>POST</a></li>
+                                <li onClick={() => setView()}><a>THREADS</a></li>
                             </ul>
                         </div>
                         <div className="flex ml-auto items-center">
@@ -57,7 +59,7 @@ class Homepage extends React.Component<{}, HomePageState> {
                         </div>
                     </div>
                     <div className="w-full border-b-2 border-base-300"/>
-                    <PostsWrapper/>
+                    {view ? <Threads/> : <PostsWrapper/>}
                 </div>
             </div>
             </>

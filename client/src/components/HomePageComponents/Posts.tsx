@@ -5,8 +5,6 @@ import { Link } from "react-router-dom";
 import convertTime from "../../helpers/convertTime";
 import postHandler from "../../handlers/postHandler";
 import AuthStore from "../../store/authStore";
-import { div } from "motion/react-client";
-import ThreadStore from "../../store/threadStore";
 
 type PostType = {
     title: string;
@@ -20,6 +18,7 @@ type PostType = {
     upvote?: Array<any>;
     downvote?: Array<any>;
     createdAt?: string;
+    accessType: string;
 }
 
 type PostsProps = {
@@ -50,7 +49,7 @@ class Posts extends React.Component<PostsProps, PostState> {
     }
     
     private formatTime = new convertTime();
-    private handleLike = new postHandler({title: "", description: "", genre: "", private: false});
+    private handleLike = new postHandler({title: "", description: "", genre: "", accessType: 'public'});
 
     render(): React.ReactNode {
         const { state } = this.state;
@@ -191,39 +190,19 @@ class Posts extends React.Component<PostsProps, PostState> {
     }
 }
 
-type ThreadTypes = {
-    threads: Array<object>;
-}
-
-class Threads extends React.Component<ThreadTypes> {
-    constructor(props: any) {
-        super(props);
-        console.log(props);
-    }
-    render () : React.ReactNode {
-        return (
-            <div>
-                <h1>wow</h1>
-            </div>
-        );
-    }
-}
-
 
 const PostsWrapper : React.FC = () => {
-    const {posts, getPosts, state, view} = PostStore();
-    const { threads, getThreads } = ThreadStore();
+    const {posts, getPosts, state} = PostStore();
     const {AuthUser} = AuthStore();
 
     useEffect(() => {
         getPosts();
-        getThreads();
     }, [getPosts]);
 
     if (!AuthUser) return;
 
     return (
-        view === 'post' ? <Posts posts={posts} state={state} userId={AuthUser._id}/> : <Threads threads={threads}/>
+        <Posts posts={posts} state={state} userId={AuthUser._id}/>
     );
 }
 
