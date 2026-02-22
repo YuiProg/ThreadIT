@@ -1,10 +1,12 @@
 import toast from "react-hot-toast";
 import axiosInstance from "../helpers/axiosInstance";
+import { isAxiosError } from "axios";
 
 type ThreadTypes = {
     name: string;
     description: string;
     image_url: string;
+    icon_url: string;
     maxLength: number;
 }
 
@@ -16,13 +18,15 @@ class ThreadHandler {
     }
 
     public createThread = async () : Promise<ThreadTypes[]> => {
-        
         try {
             const createdThread = await axiosInstance.post('/newThread', this.data); 
             this.data = createdThread.data;
             return createdThread.data;
         } catch (error) {
-            toast.error('Error');
+            if(isAxiosError(error)){
+                const { err } = error.response?.data;
+                toast.error(err);
+            }
             throw error;
         }
         
@@ -33,7 +37,6 @@ class ThreadHandler {
         try {
             const fetchedThreads = await axiosInstance.get('/getThreads');
             data = fetchedThreads.data;
-            return fetchedThreads.data;
         } catch (error : any) {
             toast.error('Error fetching threads');
             console.log(error.message);

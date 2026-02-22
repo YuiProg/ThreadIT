@@ -5,6 +5,7 @@ type ThreadTypes = {
     name: string;
     description: string;
     image_url: string;
+    icon_url: string;
     maxLength: number;
 }
 
@@ -23,11 +24,11 @@ const ThreadStore = create<ThreadStoreTypes>((set) => ({
                 name: '',
                 description: '',
                 image_url: '',
+                icon_url: '',
                 maxLength: 0
             });
 
             const fetchedData = await handleThread.fetchThreads();
-            
             set({threads: fetchedData});
             return fetchedData;
         } catch (error: any) {

@@ -17,6 +17,7 @@ interface ThreadModel {
         joinedAt: string;
     }>
     maxLength: Number;
+    settings: string;
 }
 
 interface ThreadInterfaceModel extends ThreadModel, Document {}
@@ -68,6 +69,10 @@ const ThreadSchema = new mongoose.Schema({
     maxLength: {
         type: Number,
         required: [true, 'Max length is required!']
+    },
+    settings: {
+        type: String,
+        default: 'public'
     }
 });
 
@@ -76,9 +81,10 @@ ThreadSchema.statics.createThread = async function (payload : ThreadModel) : Pro
     const data : Partial<ThreadModel> = payload;
     const { image_url, icon_url } = payload;
     
-    if (!image_url) {
+    if (!image_url && !icon_url) {
         return Error('No Image Provided');
     }
+
     const uploadIconImage = await cloudinary.uploader.upload(icon_url, {
         resource_type: "image",
             transformation: {

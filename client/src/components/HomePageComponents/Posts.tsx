@@ -57,7 +57,7 @@ class Posts extends React.Component<PostsProps, PostState> {
         return (
             !state 
                 ? (
-                <div className="w-full h-auto p-4 sm:p-10 overflow-auto">
+                <div className="w-full h-screen p-4 sm:p-10 overflow-auto">
                 {Array.isArray(posts) && posts.length > 0 ? (
                     posts.map((post, i) => (
                         <div key={i} className="w-full flex flex-col sm:flex-row items-start sm:items-center border-2 border-l-0 border-base-300 border-r-0 p-4 sm:p-5 mb-5 hover:scale-101 transition-all gap-4">
